@@ -1,0 +1,45 @@
+#!/bin/bash
+
+DOCKER_USER=$(echo USER)
+
+# Loop through arguments and process them
+for arg in "$@"
+do
+    case $arg in
+        -u|--docker-user)
+        DOCKER_USER=1
+        shift # Remove --initialize from processing
+        ;;
+        -u=*|--docker-user=*)
+        DOCKER_USER="${arg#*=}"
+        shift # Remove --cache= from processing
+        ;;
+        -r|--root)
+        ROOT_DIRECTORY="$2"
+        shift # Remove argument name from processing
+        shift # Remove argument value from processing
+        ;;
+        *)
+        OTHER_ARGUMENTS+=("$1")
+        shift # Remove generic argument from processing
+        ;;
+    esac
+done
+
+echo $DOCKER_USER
+
+# echo "\t Stating Docker isntallation \n"
+
+# echo "\t Downloading Docker intallation script \n"
+# curl -fsSL https://get.docker.com -o get-docker.sh
+
+# echo "\t Running Docker intallation script \n"
+# sh get-docker.sh
+
+# echo "\t Removing Docker intallation script \n"
+# rm get-docker.sh
+
+# echo "\t Running Docker intallation script \n"
+# sudo usermod -aG docker $user
+
+# echo "\t Docker Installed! \n"
