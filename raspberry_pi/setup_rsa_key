@@ -1,1 +1,14 @@
 #!/bin/bash
+
+source $HOME/development/bash_scripts/shared/indent
+
+echo "Generating SSH Keys"
+ssh-keygen -t rsa -b 4096 | indent
+
+echo "Starting ssh-agent in the background"
+eval "$(ssh-agent -s)" | indent
+
+echo "Adding private key to the ssh-agent"
+ssh-add $HOME/.ssh/id_rsa | indent
+
+echo "SSH Keys generated!"

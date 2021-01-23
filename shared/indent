@@ -1,0 +1,8 @@
+#!/bin/bash
+
+indent() {
+  local indentSize=3
+  local indent=1
+  if [ -n "$1" ]; then indent=$1; fi
+  pr -to $(($indent * $indentSize))
+}

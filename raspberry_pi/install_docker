@@ -1,21 +1,20 @@
 #!/bin/bash
 
-DOCKER_USER=$(echo USER)
+source $HOME/development/bash_scripts/shared/indent
+
+DOCKER_USER=$USER
+OTHER_ARGUMENTS=()
 
 # Loop through arguments and process them
 for arg in "$@"
 do
     case $arg in
-        -u|--docker-user)
-        DOCKER_USER=1
-        shift # Remove --initialize from processing
-        ;;
         -u=*|--docker-user=*)
         DOCKER_USER="${arg#*=}"
-        shift # Remove --cache= from processing
+        shift
         ;;
-        -r|--root)
-        ROOT_DIRECTORY="$2"
+        -u|--docker-user)
+        DOCKER_USER="$2"
         shift # Remove argument name from processing
         shift # Remove argument value from processing
         ;;
@@ -26,20 +25,18 @@ do
     esac
 done
 
-echo $DOCKER_USER
+echo  "Instaling Docker with $DOCKER_USER as user"
 
-# echo "\t Stating Docker isntallation \n"
+echo "Downloading Docker intallation script" | indent 
+curl -fsSL https://get.docker.com -o get-docker.sh | indent 2
 
-# echo "\t Downloading Docker intallation script \n"
-# curl -fsSL https://get.docker.com -o get-docker.sh
+echo "Running Docker intallation script" | indent 
+sh get-docker.sh | indent 2
 
-# echo "\t Running Docker intallation script \n"
-# sh get-docker.sh
+echo "Removing Docker intallation script" | indent 
+rm get-docker.sh | indent 2
 
-# echo "\t Removing Docker intallation script \n"
-# rm get-docker.sh
+echo "Adding $DOCKER_USER to docker group" | indent 
+sudo usermod -aG docker $DOCKER_USER | indent 2
 
-# echo "\t Running Docker intallation script \n"
-# sudo usermod -aG docker $user
-
-# echo "\t Docker Installed! \n"
+echo "Docker Installed!"
