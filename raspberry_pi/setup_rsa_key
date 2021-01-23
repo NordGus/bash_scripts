@@ -3,7 +3,7 @@
 source $HOME/development/bash_scripts/shared/indent
 
 echo "Generating SSH Keys"
-ssh-keygen -t rsa -b 4096 | indent
+ssh-keygen -t rsa -b 4096
 
 echo "Starting ssh-agent in the background"
 eval "$(ssh-agent -s)" | indent
