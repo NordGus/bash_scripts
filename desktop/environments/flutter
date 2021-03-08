@@ -1,0 +1,4 @@
+#!/bin/bash
+
+export APP_ENV=development
+export PATH=$PATH:$DEV_WORKSPACE/tools/flutter/bin

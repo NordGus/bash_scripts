@@ -1,0 +1,15 @@
+#!/bin/bash
+
+export GIT_PS1_SHOWDIRTYSTATE=1
+export GIT_PS1_SHOWCOLORHINTS=1
+export GIT_PS1_SHOWUNTRACKEDFILES=1
+
+function git_branch() {
+    declare -F __git_ps1 &> /dev/null && __git_ps1 "\[$(tput bold)\]\[\033[48;5;202m\] Git Branch ▶ %s \[\033[48;5;202m\]\[$(tput sgr0)\]\n "
+}
+
+function prompt_command() {
+    PS1="\[$(tput bold)\]\@\[$(tput sgr0)\] [\[$(tput bold)\]\[$(tput sgr0)\]\[\033[38;5;45m\]\u\[$(tput sgr0)\]\[$(tput sgr0)\]\[\033[38;5;15m\]@\[$(tput bold)\]\[$(tput sgr0)\]\[\033[38;5;11m\]\h\[$(tput sgr0)\]\[$(tput sgr0)\]\[\033[38;5;15m\]]\n \[$(tput bold)\]\[\033[38;5;0m\]\[\033[48;5;15m\] Directory ▶ \w \[\033[38;5;15m\]\[\033[48;5;-1m\]\[$(tput sgr0)\]\n $(git_branch)\[$(tput bold)\]\[$(tput sgr0)\]\[\033[38;5;46m\]\\$ ▶\[$(tput sgr0)\]\[$(tput sgr0)\]\[\033[38;5;15m\] \[$(tput sgr0)\]"
+}
+
+export PROMPT_COMMAND=prompt_command

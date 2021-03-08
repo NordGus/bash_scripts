@@ -1,0 +1,4 @@
+#!/bin/bash
+
+export ANDROID_HOME=$DEV_WORKSPACE/android/sdk
+export PATH=$PATH:$ANDROID_HOME
