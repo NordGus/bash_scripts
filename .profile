@@ -39,3 +39,6 @@ include_script_to_profile "$BASH_SCRIPTS_PATH/desktop/environments/git_global"
 include_script_to_profile "$BASH_SCRIPTS_PATH/desktop/environments/flutter"
 include_script_to_profile "$BASH_SCRIPTS_PATH/desktop/environments/android/sdk"
 
+gh_init () {
+    sh $BASH_SCRIPTS_PATH/desktop/gh_init.sh -name=$1 -repo=$2
+}
