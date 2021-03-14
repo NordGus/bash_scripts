@@ -11,20 +11,20 @@ done
 
 if [ -z "$name" ]
 then
-    echo "\t-name flag must be present"
-    return 1
+    echo "-name flag must be present"
+    exit 1
 fi
 
 if [ -z "$repo" ]
 then
     echo "\t-repo flag must be present"
-    return 2
+    exit 2
 fi
 
 if git status
 then
     echo "\tcan't reinitialize an existing repo"
-    return 3
+    exit 3
 fi
 
 echo "initializing repo $name"
@@ -34,5 +34,4 @@ git add README.md
 git commit -m "Initializing $name"
 git branch -M main
 git remote add origin $repo
-git push -u origin main
-return 0
+git push --set-upstream origin main
