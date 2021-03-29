@@ -3,6 +3,8 @@
 source $HOME/development/bash_scripts/shared/indent
 
 DOCKER_USER=$USER
+COMPOSE_VERSION=1.28.6
+MACHINE_VERSION=0.16.2
 OTHER_ARGUMENTS=( )
 
 # Loop through arguments and process them
@@ -15,6 +17,24 @@ do
         ;;
         -u|--docker-user)
         DOCKER_USER="$2"
+        shift # Remove argument name from processing
+        shift # Remove argument value from processing
+        ;;
+        -c=*|--compose-version=*)
+        COMPOSE_VERSION="${arg#*=}"
+        shift
+        ;;
+        -c|--compose-version)
+        COMPOSE_VERSION="$2"
+        shift # Remove argument name from processing
+        shift # Remove argument value from processing
+        ;;
+        -m=*|--machine-version=*)
+        MACHINE_VERSION="${arg#*=}"
+        shift
+        ;;
+        -m|--machine-version)
+        MACHINE_VERSION="$2"
         shift # Remove argument name from processing
         shift # Remove argument value from processing
         ;;
@@ -55,3 +75,12 @@ echo "Adding $DOCKER_USER to docker group"
 sudo usermod -aG docker $DOCKER_USER
 
 echo "Docker Installed!"
+
+echo  "Instaling docker-compose (v$COMPOSE_VERSION) for user: $DOCKER_USER"
+sudo curl -L "https://github.com/docker/compose/releases/download/$COMPOSE_VERSION/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+sudo chmod +x /usr/local/bin/docker-compose
+
+echo  "Instaling docker-machine (v$MACHINE_VERSION) for user: $DOCKER_USER"
+curl -L https://github.com/docker/machine/releases/download/v$MACHINE_VERSION/docker-machine-`uname -s`-`uname -m` >/tmp/docker-machine &&
+    chmod +x /tmp/docker-machine &&
+    sudo cp /tmp/docker-machine /usr/local/bin/docker-machine
