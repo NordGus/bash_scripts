@@ -1,13 +1,14 @@
 #!/bin/bash
 
-yarn init
-yarn add --dev webpack
-yarn add -D babel-loader
-yarn add -D @babel/core
-yarn add phaser
-yarn add -D @babel/preset-env
-yarn add -D webpack-dev-server
-yarn add -D copy-webpack-plugin
-yarn add -D webpack-cli
+mkdir src
+mkdir src/assets 
+touch src/index.js
+touch src/main.css
+touch src/index.html
 
-yarn run webpack
+npm init
+npm install webpack webpack-cli webpack-dev-server @babel/core babel-loader @babel/preset-env css-loader mini-css-extract-plugin html-loader html-webpack-plugin copy-webpack-plugin --save-dev
+npm install phaser
+
+touch webpack.config.js
+touch .babelrc
