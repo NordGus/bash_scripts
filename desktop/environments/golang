@@ -1,6 +1,6 @@
 #!/bin/bash
 
 export GOROOT=$DEV_WORKSPACE/.go
-export GOPATH=$DEV_WORKSPACE/development/go
+export GOPATH=$DEV_WORKSPACE/go
 export GOBIN=$GOPATH/bin
 export PATH=$PATH:$GOROOT/bin:$GOBIN
