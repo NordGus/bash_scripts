@@ -14,7 +14,7 @@ fi
 
 if [ "$master" == "yes" ]
 then
-  # curl -sfL https://get.k3s.io | K3S_KUBECONFIG_MODE="664" sh - --docker
+  curl -sfL https://get.k3s.io | K3S_KUBECONFIG_MODE="664" sh - --docker
   success=$?
 else
   printf "Master Node IP: "
@@ -38,7 +38,7 @@ else
     exit 2
   fi
 
-  # curl -sfL https://get.k3s.io | K3S_TOKEN="$token" K3S_URL="https://$server:6443" sh - --docker
+  curl -sfL https://get.k3s.io | K3S_TOKEN="$token" K3S_URL="https://$server:6443" sh - --docker
   success=$?
 fi
 
