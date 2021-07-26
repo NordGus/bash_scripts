@@ -1,0 +1,51 @@
+#!/bin/bash
+set -e
+# set -o pipefail
+
+success=0
+
+printf "Master node? [yes/no]: "
+read master
+
+if [[ "$master" != "yes" && "$master" != "no" ]]; then
+  echo "invalid input"
+  exit 1
+fi
+
+if [ "$master" == "yes" ]
+then
+  # curl -sfL https://get.k3s.io | K3S_KUBECONFIG_MODE="664" sh - --docker
+  success=$?
+else
+  printf "Master Node IP: "
+  read server
+  
+  if [[ -z $server && ${server+x} ]]
+  then
+    echo "Master Node's IP is required!"
+    exit 2
+  fi
+
+  printf "Checking connection to Master Node... "
+  nc -v -z -w 3 $server 22 &> /dev/null && printf "available!\n" || (printf "unavailable!\n"  && exit 3)
+
+  echo "Master Node Token (check Master Node's /var/lib/rancher/k3s/server/node-token):"
+  read token
+  
+  if [[ -z $token && ${token+x} ]]
+  then
+    echo "Master Node's Token is required!"
+    exit 2
+  fi
+
+  # curl -sfL https://get.k3s.io | K3S_TOKEN="$token" K3S_URL="https://$server:6443" sh - --docker
+  success=$?
+fi
+
+if [$success != 0]
+then
+  echo "K3S failed to installs"
+  exit 2
+else 
+  echo "K3S installed!"
+fi
