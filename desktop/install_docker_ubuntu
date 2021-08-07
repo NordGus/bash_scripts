@@ -1,11 +1,16 @@
 #!/bin/bash
-
-source $HOME/development/bash_scripts/shared/indent
+set -e
 
 DOCKER_USER=$USER
-COMPOSE_VERSION=1.28.6
-MACHINE_VERSION=0.16.2
+COMPOSE_VERSION=1.29.2
 OTHER_ARGUMENTS=( )
+
+failed? () {
+    if [$1 -ne 0]; then
+        echo "Docker failed to installed! (error: $1)"
+        exit $2
+    fi
+}
 
 # Loop through arguments and process them
 for arg in "$@"
@@ -29,15 +34,6 @@ do
         shift # Remove argument name from processing
         shift # Remove argument value from processing
         ;;
-        -m=*|--machine-version=*)
-        MACHINE_VERSION="${arg#*=}"
-        shift
-        ;;
-        -m|--machine-version)
-        MACHINE_VERSION="$2"
-        shift # Remove argument name from processing
-        shift # Remove argument value from processing
-        ;;
         *)
         OTHER_ARGUMENTS+=("$1")
         shift # Remove generic argument from processing
@@ -47,40 +43,46 @@ done
 
 echo  "Instaling Docker for user: $DOCKER_USER"
 
-echo  "Uninstalling old Docker versions"
-sudo apt-get remove docker docker-engine docker.io containerd runc
+echo "Removing older versions..."
+sudo apt-get remove docker \
+  containerd runc
+failed? $? 1
 
-echo  "Updating APT"
 sudo apt-get update
+failed? $? 2
 
-echo  "Adding Docker's official GPG Key"
-sudo apt-get install \
-    apt-transport-https \
-    ca-certificates \
-    curl \
-    gnupg \
-    lsb-release
+echo "Adding Docker’s official GPG key..."
 curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
+failed? $? 3
 
-echo  "Setting up stable repository"
+echo "Adding Docker’s stable repository..."
 echo \
   "deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu \
   $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+failed? $? 4
 
-echo "Installing Docker packages"
 sudo apt-get update
-sudo apt-get install docker-ce docker-ce-cli containerd.io
+failed? $? 5
 
-echo "Adding $DOCKER_USER to docker group"
+echo "Installing packages..."
+sudo apt-get install docker-ce docker-ce-cli containerd.io -y
+failed? $? 6
+
+echo "Adding $DOCKER_USER to docker group..."
 sudo usermod -aG docker $DOCKER_USER
+failed? $? 7
 
 echo "Docker Installed!"
 
-echo  "Instaling docker-compose (v$COMPOSE_VERSION) for user: $DOCKER_USER"
-sudo curl -L "https://github.com/docker/compose/releases/download/$COMPOSE_VERSION/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-sudo chmod +x /usr/local/bin/docker-compose
+echo  "Removing old docker-compose versions..."
+sudo rm /usr/local/bin/docker-compose
+failed? $? 8
 
-echo  "Instaling docker-machine (v$MACHINE_VERSION) for user: $DOCKER_USER"
-curl -L https://github.com/docker/machine/releases/download/v$MACHINE_VERSION/docker-machine-`uname -s`-`uname -m` >/tmp/docker-machine &&
-    chmod +x /tmp/docker-machine &&
-    sudo cp /tmp/docker-machine /usr/local/bin/docker-machine
+echo  "Instaling docker-compose (v$COMPOSE_VERSION) for user: $DOCKER_USER..."
+sudo curl -L "https://github.com/docker/compose/releases/download/$COMPOSE_VERSION/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+failed? $? 9
+
+sudo chmod +x /usr/local/bin/docker-compose
+failed? $? 10
+
+echo "docker-compose Installed!"
